@@ -1,21 +1,22 @@
 FROM ubuntu:22.04
 
-# Set noninteractive mode for apt-get
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Update apt-get
-RUN apt-get update
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install tzdata and set timezone
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+# Set timezone
 RUN ln -fs /usr/share/zoneinfo/Europe/Barcelona /etc/localtime
-RUN dpkg-reconfigure -f noninteractive tzdata
 
 # Install apache2
-RUN apt-get install -y apache2
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends apache2 && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install PHP 8.1 and Apache PHP module
-RUN apt-get install -y php8.1 libapache2-mod-php8.1
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends php8.1 libapache2-mod-php8.1 && \
+    rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
