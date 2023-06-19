@@ -2,9 +2,9 @@ version: '3.9'
 
 services:
   laravel-app:
-    image: bitnami/laravel:8
+    image: bitnami/laravel:10.2.3
     ports:
-      - 8000:80
+      - 8000:8000
     volumes:
       - ./backend:/app
     environment:
