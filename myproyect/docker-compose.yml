@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  laravel-app:
+    image: bitnami/laravel:8
+    ports:
+      - 8000:80
+    volumes:
+      - ./backend:/app
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
+    depends_on:
+      - db
+
+  react-app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/usr/src/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - laravel-app
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+    ports:
+      - 3306:3306
+
+volumes:
+  db_data: {}
