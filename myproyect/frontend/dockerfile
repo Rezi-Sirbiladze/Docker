@@ -1,28 +1,17 @@
-# Stage 1: Build the React app
-FROM node:16.20.0-alpine
+FROM node:20-alpine
 
 # Set the working directory
 WORKDIR /app
 
 # Copy proyect
-COPY package.json package-lock.json ./
-RUN npm ci --silent
+COPY package.json .
+RUN npm install
 
 # Copie all the remaining files and directories from the host to the current working directory
 COPY . .
-RUN npm run build
 
-# Stage 2: Serve the built app using Apache
-FROM httpd:2.4
-
-# Remove default Apache configurations
-RUN rm -rf /usr/local/apache2/htdocs/*
-
-# Copy the built app from the previous stage
-COPY --from=build /app/build /usr/local/apache2/htdocs
-
-# Expose port 3000 for Apache
+# Expose port 3000
 EXPOSE 3000
 
 # Start Apache service
-CMD ["httpd-foreground"]
+CMD ["npm", "start"]
